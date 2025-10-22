@@ -1,8 +1,8 @@
-#🚀 LinkedIn Content Studio — n8n Automation
+# 🚀 LinkedIn Content Studio — n8n Automation
 
 Fully automated LinkedIn content creation and publishing workflow using n8n + Nano-Banana AI + Airtable integration — designed for SMEs and startups to generate consistent, branded posts weekly.
 
-##Table of Contents
+## Table of Contents
 
 1.Project Overview
 
@@ -20,7 +20,7 @@ Fully automated LinkedIn content creation and publishing workflow using n8n + Na
 
 8.License
 
-##1️⃣ Project Overview
+## 1️⃣ Project Overview
 
 Problem:
 SMEs and startups struggle to maintain consistent, engaging LinkedIn content. Marketing teams are often stretched thin, posts are irregular, visuals inconsistent, and engagement is low.
@@ -44,7 +44,7 @@ Text and images are generated dynamically using AI.
 
 Drafts include all brand information: logo, color, slogan, company name.
 
-##2️⃣ Features
+## 2️⃣ Features
 
 AI-Powered Text Generation: LinkedIn-ready content tailored to brand tone and post goals.
 
@@ -56,7 +56,7 @@ Human Approval System: Manual approval ensures quality before posting.
 
 Scalable & Extensible: Workflow can later include auto-posting, analytics, and error monitoring.
 
-##3️⃣ Workflow Architecture
+## 3️⃣ Workflow Architecture
 
 [Schedule Trigger] → [Edit Fields] → [Text Generation] → [Image Generation]
        ↓
@@ -76,8 +76,8 @@ Node 5: Airtable — stores all draft data for human review.
 
 Node 6+: Manual Approval, LinkedIn Posting, Analytics (planned).
 
-##4️⃣ Node Details
-##Node 2 — Edit Fields
+## 4️⃣ Node Details
+### Node 2 — Edit Fields
 
 Collects company data and post prompts:
 
@@ -99,7 +99,7 @@ Collects company data and post prompts:
   "post_count": 5
 }
 
-##Node 3 — Text Generation
+### Node 3 — Text Generation
 
 Generates post content dynamically.
 
@@ -107,14 +107,14 @@ Output path for first post:
   {{$node["Generate text (OpenRouter)"].json["choices"][0]["message"]["content"]}}
 Produces LinkedIn-style content: hook, 1–2 paragraphs, CTA, hashtags.
 
-###Node 4 — Image Generation
+### Node 4 — Image Generation
 
 Uses AI to generate branded visuals.
 
 Pulls brand info dynamically from Edit Fields node:
 "prompt": "Create a LinkedIn-style visual based on this post text: {{$node['Generate text (OpenRouter)'].json['choices'][0]['message']['content']}}. Use brand color {{$node['Edit Fields'].json['brand_color']}}, logo from {{$node['Edit Fields'].json['brand_logo']}}, style consistent with slogan '{{$node['Edit Fields'].json['slogan']}}'."
 
-###Node 5 — Airtable Draft Storage
+### Node 5 — Airtable Draft Storage
 
 Stores generated text + image + brand info.
 
@@ -132,7 +132,7 @@ Fields mapping example:
 | slogan        | From Node 2          |
 | company_name  | From Node 2          |
 
-##5️⃣ Setup & Configuration
+## 5️⃣ Setup & Configuration
 
 Nano-Banana / OpenRouter API
 
@@ -155,7 +155,7 @@ LINKEDIN_ACCESS_TOKEN=
 TIMEZONE=UTC
 
 
-6️⃣ Usage
+## 6️⃣ Usage
 
 Trigger workflow via schedule or manually.
 
@@ -167,7 +167,7 @@ Human reviewer approves each post.
 
 Later nodes (LinkedIn + analytics) will handle posting and metrics.
 
-##7️⃣ Future Enhancements
+## 7️⃣ Future Enhancements
 
 Manual Approval Node → automate notifications for reviewers.
 
@@ -179,7 +179,7 @@ Error Handling / Alerts → Slack/email notifications for failures or low-confid
 
 Logo & Brand Validation → ensure brand consistency before storing draft.
 
-##8️⃣ License
+## 8️⃣ License
 
 MIT License — feel free to use, modify, and extend this workflow for your own LinkedIn content automation projects.
 
