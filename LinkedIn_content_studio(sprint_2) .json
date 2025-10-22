@@ -1,0 +1,580 @@
+{
+  "name": "LinkedIn_content_studio(draft)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "36749f3b-f30b-4193-a53b-23cc25d1e1cc",
+              "name": "post_text",
+              "value": "= {{$json[\"text\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "8a069d88-a0cc-4629-b9f0-a5a0f17f68a2",
+              "name": "status:",
+              "value": "\"Pending Approval\"",
+              "type": "string"
+            },
+            {
+              "id": "6cb01f98-cbf0-4a00-87b1-2d3f4b9e9ddb",
+              "name": "image_url",
+              "value": "={{$json[\"image_url\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        -32
+      ],
+      "id": "5f2b7199-1ea1-46fe-8999-96a94f1c32bd",
+      "name": "Save Draft to Airtable"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -176,
+        352
+      ],
+      "id": "bf57c15c-a28f-4859-8696-3586ac9c2db2",
+      "name": "Wait for Human Approval",
+      "webhookId": "0f8afdb0-2d30-4aeb-a14d-b72dbd6abf1b"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        400
+      ],
+      "id": "7fc85eba-dad8-42c2-8b4c-3492e169c657",
+      "name": "Wait",
+      "webhookId": "d257e168-313d-496e-9f60-707139adce85"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        32,
+        352
+      ],
+      "id": "ee8a2b20-1461-41ea-8aaf-61a7ad122399",
+      "name": "scheduled posting"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/shares",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=   \"{{$json['post_text']}}\","
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        240
+      ],
+      "id": "18e3a41b-2b47-4543-b227-75feb6aa3431",
+      "name": "post to linkedIn"
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/analytics",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        288
+      ],
+      "id": "cceacdd5-fa70-4fd5-8bad-7263edf03c3c",
+      "name": "Fetch LinkedIn Analytics"
+    },
+    {
+      "parameters": {
+        "sendTo": "info@example.com",
+        "subject": "Linledin posts report",
+        "emailType": "text",
+        "message": "✅ 5 posts generated. 💬 3 approved and published. 📊 Avg engagement: 4.5%.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        896,
+        288
+      ],
+      "id": "73692dfa-1da5-4bd7-93b3-4e9f9681c697",
+      "name": "Send Weekly Summary",
+      "webhookId": "0c9a4701-68de-4052-99ba-e2a706155730",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rZHIExYAri0NUA7T",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        -32
+      ],
+      "id": "85786339-b60c-4fc1-992d-bf85633e61a7",
+      "name": "weekly trigger"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"company_name\": \"NanoForge AI\",\n  \"slogan\": \"Automate Smart. Grow Fast.\",\n  \"brand_color\": \"#1A73E8\",\n  \"brand_logo\": \"https://nanoforge.ai/logo.png\",\n  \"post_goals\": \"Increase brand authority and engagement\",\n  \"tone\": \"Friendly, confident, inspiring\",\n  \"hashtags\": \"#AI #Automation #Startup #Productivity\",\n  \"prompts\": [\n    \"Share a recent customer success story that highlights your AI product impact\",\n    \"Give an actionable AI automation tip for startups\",\n    \"Announce a new NanoForge AI feature that saves users time\",\n    \"Share a thought-provoking insight about the future of AI in business\",\n    \"Highlight a behind-the-scenes moment from the team\"\n  ],\n  \"post_count\": 5\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        -32
+      ],
+      "id": "63f8a2ef-f7df-4ef2-b96a-abe889b15bd6",
+      "name": "Define Prompts & Brand Info"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nanobanana.ai/generator",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"image-generation-1\",\n  \"prompt\": \"Create a LinkedIn-style post visual based on this text:\\n\\n{{$node['Generate text(openrouter)'].json['choices'][0]['message']['content']}}\\n\\nDesign it using the brand color {{$node['Define Prompts & Brand Info'].json['brand_color']}}, and include the logo from {{$node['Define Prompts & Brand Info'].json['brand_logo']}}. Keep the design consistent with the slogan '{{$node['Define Prompts & Brand Info'].json['slogan']}}' and make it professional, clean, and attention-grabbing. The image should reflect {{$node['Define Prompts & Brand Info'].json['company_name']}}’s tone: {{$node['Define Prompts & Brand Info'].json['tone']}}.\",\n  \"size\": \"1024x1024\",\n  \"n\": 1,\n  \"style\": \"corporate minimalism\",\n  \"output_format\": \"url\"\n}\n",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        -32
+      ],
+      "id": "c6aad90f-01fa-4af4-a1e6-a05f0c46c51f",
+      "name": "Generate image(Nano-Banana)",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "uoiz0fgsE0SLZ89u",
+          "name": "nano-banana(gemini)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-4\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a LinkedIn social media copywriter. Keep tone friendly, confident, inspiring. Align content with the company's brand, slogan, and goals.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Generate {{ $json.post_count }} LinkedIn post drafts for {{ $json.company_name }}. \\n\\nBrand slogan: '{{ $json.slogan }}'\\nBrand color: '{{ $json.brand_color }}'\\nGoals: '{{ $json.post_goals }}'\\nHashtags: '{{ $json.hashtags }}'\\n\\nUse these prompts:\\n1. {{ $json.prompts[0] }}\\n2. {{ $json.prompts[1] }}\\n3. {{ $json.prompts[2] }}\\n4. {{ $json.prompts[3] }}\\n5. {{ $json.prompts[4] }}\\n\\nEach post should be 120–200 words, include 2–4 relevant hashtags, and be engaging for LinkedIn professionals.\"\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 350\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -32
+      ],
+      "id": "5c413b50-bb90-4ed4-88d2-55c76fc4f006",
+      "name": "Generate text(openrouter)"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appAZGUIyI6jNKy2V",
+          "mode": "list",
+          "cachedResultName": "Social Post Manager",
+          "cachedResultUrl": "https://airtable.com/appAZGUIyI6jNKy2V"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnLj0Ch94InKrce",
+          "mode": "list",
+          "cachedResultName": "Posts",
+          "cachedResultUrl": "https://airtable.com/appAZGUIyI6jNKy2V/tblnLj0Ch94InKrce"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Post ID",
+              "displayName": "Post ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Post Text",
+              "displayName": "Post Text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending Approval",
+                  "value": "Pending Approval"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Posted",
+                  "value": "Posted"
+                },
+                {
+                  "name": "Failed",
+                  "value": "Failed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Scheduled Date",
+              "displayName": "Scheduled Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Brand Logo",
+              "displayName": "Brand Logo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Brand Color",
+              "displayName": "Brand Color",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Slogan",
+              "displayName": "Slogan",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Word Count",
+              "displayName": "Word Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Days Until Scheduled",
+              "displayName": "Days Until Scheduled",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Post Summary (AI)",
+              "displayName": "Post Summary (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content Category (AI)",
+              "displayName": "Content Category (AI)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        -32
+      ],
+      "id": "12864ad1-aa81-4962-94e5-b7a7ca92a678",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "jZiMX9wV6fvX98kp",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Save Draft to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Wait for Human Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Human Approval": {
+      "main": [
+        [
+          {
+            "node": "scheduled posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "scheduled posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "scheduled posting": {
+      "main": [
+        [
+          {
+            "node": "post to linkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "post to linkedIn": {
+      "main": [
+        [
+          {
+            "node": "Fetch LinkedIn Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch LinkedIn Analytics": {
+      "main": [
+        [
+          {
+            "node": "Send Weekly Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "weekly trigger": {
+      "main": [
+        [
+          {
+            "node": "Define Prompts & Brand Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Define Prompts & Brand Info": {
+      "main": [
+        [
+          {
+            "node": "Generate text(openrouter)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate image(Nano-Banana)": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate text(openrouter)": {
+      "main": [
+        [
+          {
+            "node": "Generate image(Nano-Banana)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Save Draft to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "23f4dc29-0a4b-4998-b8d3-f939da9fca99",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "367c1bd57538f3787bdd481fdfef4d031196b1be75a7cb463ae7b322b42d3a00"
+  },
+  "id": "BdnLnUgJDJsZF5CT",
+  "tags": []
+}
